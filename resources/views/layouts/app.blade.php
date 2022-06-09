@@ -34,10 +34,10 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{{ url('/') }}">Home</a>
+                            <a class="nav-link active" aria-current="page" href="{{ route('TakeTurn') }}">Take turn</a>
                           </li>
                           <li class="nav-item">
-                            <a class="nav-link" href="#">Turn Ratings</a>
+                            <a class="nav-link" href="{{route('TrackTurn') }}">Track turn</a>
                           </li>
                           <li class="nav-item">
                             <a class="nav-link" href="#">Service</a>

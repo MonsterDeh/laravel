@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\TurnController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -15,11 +17,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-});
 
-Route::resource('/User',UserController::class);
+
+
+Route::get('/',[HomeController::class,'home'] )->name('home');
+
+Route::get('/TakeTurn',[TurnController::class,'takeTurn'] )->name('TakeTurn');
+Route::get('/TrackTurn',[TurnController::class,'trackTurn'] )->name('TrackTurn');
+
+ Route::resource('/User',UserController::class);
+
 
 // Route::get('/turn', function () {
 //     return view('turn');

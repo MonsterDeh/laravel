@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\MyUser;
 use App\Models\Service;
-use App\Models\User;
 use App\Models\Worktime;
 use Illuminate\Http\Request;
 
@@ -71,8 +70,8 @@ class UserController extends Controller
         //------------------------//
 
 
-        \App\Models\MyUser::create($request->all());
-        $user=\App\Models\MyUser::where('phone',$request->all()['phone'])->get();
+        MyUser::create($request->all());
+        $user=MyUser::where('phone',$request->all()['phone'])->get();
         // dd($user);
        return redirect()->route('User.show',['User'=>$user[0]['id'],200]);
         // echo 'hekko';
@@ -91,6 +90,7 @@ class UserController extends Controller
         
         $User=MyUser::find($id);
         $Services=Service::all(); 
+        
         $Worktime=(isset($_GET['day']))? 
             Worktime::hasCapacity()->where('day','=',(new Worktime)->dayToInt(strtolower($_GET['day'])))->get() : 
             Worktime::hasCapacity()->get()
