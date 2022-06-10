@@ -88,18 +88,14 @@ class UserController extends Controller
     public function show($id)
     {   
         
-        $User=MyUser::find($id);
+        $User=MyUser::findOrFail($id);
         $Services=Service::all(); 
         
-        $Worktime=(isset($_GET['day']))? 
-            Worktime::hasCapacity()->where('day','=',(new Worktime)->dayToInt(strtolower($_GET['day'])))->get() : 
-            Worktime::hasCapacity()->get()
-        ;
-        // if((isset($_GET['day']))){
-        //     // dd($_GET['day']);
-        //     dd($Worktime);
-        // }
-        return view('dashboard',compact('User','Services','Worktime'));
+       
+        
+        Worktime::hasCapacity()->get();
+
+        return view('dashboard',compact('User','Services',));
     }
 
     /**
@@ -134,5 +130,15 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function worktime(Request $request,$id)
+    {
+        // dd($id,$request->all());
+        $Worktime=Worktime::hasCapacity()->whereDay($request->all()['day'])->get();
+        // dd($Worktime);
+       
+        $Dates=['user_id'=>$id,'services_id'=>$request->all()['service']];
+       return view('form',compact('Worktime','Dates'));
+        
     }
 }

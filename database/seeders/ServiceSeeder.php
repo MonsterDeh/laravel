@@ -17,7 +17,7 @@ class ServiceSeeder extends Seeder
     {
         DB::table('services')->insert([
             [
-                'name'=>'Wash basin',
+                'name'=>'Outside cleaning',
                 'price'=>25000,
                 'time'=>15,
                 'description'=>"Wash outside of car"
@@ -29,7 +29,7 @@ class ServiceSeeder extends Seeder
                 'description'=>"Wash inside of car"
             ],
             [
-                'name'=>'Zero washing',
+                'name'=>'Full washing',
                 'price'=>25000,
                 'time'=>15,
                 'description'=>"Wash everywhere"

@@ -49,8 +49,13 @@ class Worktime extends Model
     //     static::addGlobalScope(new CapacityWorktimeScope);
     // }
 
-    public function scopeHasCapacity( $query)
+    public function scopeHasCapacity($query)
     {
         $query->where([['capacity','>',0]]);
     }
+    public function scopeWhereDay($query,$day)
+    {
+        $query->where('day','=',$this->dayToInt(strtolower($day)));
+    }
+    
 }

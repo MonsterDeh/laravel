@@ -1,45 +1,56 @@
-@extends('layouts.Main')
+@extends('layouts.app')
 
 @section('content')
   
 <div class="container">
-
-    <form action="" method="POST" >
-        @csrf
-        <div class="d-flex justify-content-around">
-
-            <input name="name" class="form-control w-25" type="text" placeholder="Name" aria-label="default input example">
-            <input name="family_name" class="form-control w-25" type="text" placeholder="Family Name" aria-label="default input example">
-        </div>
-        <div class=" my-4 d-flex justify-content-around">
-            <input name="national_code" class="form-control w-25  " type="text" placeholder="National Code " aria-label="default input example">
-            <input name="phone" class="form-control w-25  " type="text" placeholder="Phone " aria-label="default input example">
-            
-        </div>
-        <div class="d-flex justify-content-around">
-
-            <input  name="car_type" class="form-control " type="text" placeholder="Car Type" aria-label="default input example">
-            <input name="plaque" class="form-control  " type="text" placeholder="Plaque" aria-label="default input example">
-            
-        </div>
-        <div class="py-4 ">
-            <input  name="time" class="form-control " type="text" placeholder="time" aria-label="default input example">
-
-        </div>
-        <div class="d-flex  py-4 justify-content-center">
-            <label class="p-1" for="ServiceSelect">Service</label>
-            <select id="ServiceSelect" name="service" class="form-select w-25" aria-label="Default select example">
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </select>
-        </div>
-        <div class="d-flex  py-4 justify-content-center">
-            <button class="btn btn-success" type="submit">Submint</button>
-        </div>
-    </form>
-</div>
-
+    {{-- -------------------- worktime---------------------------- --}}
+           
+    <div class="col-9 "data-bs-spy="scroll" data-bs-smooth-scroll="true"  >
+       
+                 @csrf
+             <table class="table">
+                 <thead>
+                   <tr>
+                     <th scope="col">#</th>
+                     <th scope="col">day</th>
+                     <th scope="col">start</th>
+                     <th scope="col">end</th>
+                     <th scope="col">capacity</th>
+                     <th scope="col">Choose</th>
+                     
+                  
+                   </tr>
+                 </thead>
+                 <tbody>
+    
+                     @php   $count=1; @endphp
+                     @foreach ($Worktime as $time)
+                         <tr>
+                         <th scope="row">{{$count++}}</th>
+                         <td>{{$time['day']}} </td>
+                         <td>{{$time['start']}} </td>
+                         <td>{{$time['end']}} </td>
+                         <td>{{$time['capacity']}} </td>
+                         <td>
+                            <form action={{route('CreateTurn')}} method="post">
+                                @csrf
+                                <input type="hidden" name="services_id" value={{$Dates['services_id']}}>
+                                <input type="hidden" name="user_id" value={{$Dates['user_id']}}>
+                                <input type="hidden" name="worktime_id" value={{$time['id']}}>
+                                <button class="btn btn-primary" type="submit">Choose</button>
+                            </form>     
+                        </td>
+                         </tr>
+                     @endforeach
+    
+                 </tbody>
+               </table>
+         
+         </div>
+    
+     </div>
+       
+    </div>
 
 
 
