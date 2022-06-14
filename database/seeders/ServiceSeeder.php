@@ -31,7 +31,7 @@ class ServiceSeeder extends Seeder
             [
                 'name'=>'Full washing',
                 'price'=>25000,
-                'time'=>15,
+                'time'=>60,
                 'description'=>"Wash everywhere"
             ]
         ]);

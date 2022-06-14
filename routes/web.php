@@ -24,6 +24,7 @@ Route::get('/',[HomeController::class,'home'] )->name('home');
 
 Route::get('/TakeTurn',[TurnController::class,'takeTurn'] )->name('TakeTurn');//inout form the go to user.show
 Route::get('/TrackTurn',[TurnController::class,'trackTurn'] )->name('TrackTurn');
+Route::post('/TrackTurn',[TurnController::class,'trackTurnPost'] )->name('TrackTurn');
 Route::post('/CreateTurn',[TurnController::class,'createTurn'] )->name('CreateTurn');
 
 

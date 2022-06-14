@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('end');
             $table->integer('day');
             $table->integer('capacity')->default(60);   
+            $table->timestamps();
           
         });
     }

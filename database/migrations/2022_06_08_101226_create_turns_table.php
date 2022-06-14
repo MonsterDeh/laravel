@@ -20,6 +20,9 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('services_id');
             $table->unsignedBigInteger('worktime_id');
+
+            $table->integer('status')->default('0');
+
             
             $table->foreign('user_id')->references('id')->on('my_users');
             $table->foreign('services_id')->references('id')->on('services');

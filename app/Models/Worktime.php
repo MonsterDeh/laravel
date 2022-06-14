@@ -6,7 +6,7 @@ use App\Models\Scopes\CapacityWorktimeScope;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Worktime extends Model
 {
@@ -56,6 +56,11 @@ class Worktime extends Model
     public function scopeWhereDay($query,$day)
     {
         $query->where('day','=',$this->dayToInt(strtolower($day)));
+    }
+
+    public function turn()
+    {
+        return $this->belongsTo(Turn::class);
     }
     
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MyUser;
 use App\Models\Service;
+use App\Models\Turn;
 use App\Models\Worktime;
 use Illuminate\Http\Request;
 
@@ -90,23 +91,38 @@ class UserController extends Controller
         
         $User=MyUser::findOrFail($id);
         $Services=Service::all(); 
-        
-       
+        $Orders= Turn::where([['user_id',$id],['status','0']])->get();
+    //    dd($Orders);
         
         Worktime::hasCapacity()->get();
 
-        return view('dashboard',compact('User','Services',));
+        return view('dashboard',compact('User','Services','Orders',));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+    //  * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
-        //
+        dd($id,$request->all());
+        // dd($request);
+        $turn=Turn::find($request->get('tracking_code'));
+
+        $service=Service::find($turn->services_id);
+        // $Worktime=Worktime::
+        //     hasCapacity()->
+        //     whereDay($turn->worktime->day)->
+        //     where([["capacity",'>=',$service->time],['id' ,'!=',$turn->worktime_id]])->
+        //     get();
+        //  dd($service);
+        
+       
+        $Dates=['turn_id'=>$turn->id];
+        return view('turn.form' ,compact('Worktime','Dates'));
+     
     }
 
     /**
@@ -118,7 +134,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //TODO  To  insert middle table
+        
     }
 
     /**
@@ -127,15 +143,29 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
-        //
+        // dd($request->all());
+        $Turn=Turn::find($request->get('tracking_code'));
+        $worktime=Worktime::find($Turn->worktime_id );
+        $worktime->capacity+=Service::find($Turn->services_id)->time;
+        $worktime->save();
+
+        Turn::destroy($request->get('tracking_code'));
+        return redirect()->route("User.show",['User' => $id]);
     }
     public function worktime(Request $request,$id)
     {
         // dd($id,$request->all());
-        $Worktime=Worktime::hasCapacity()->whereDay($request->all()['day'])->get();
-        // dd($Worktime);
+        $service=Service::find( $request->get('service'));
+        // dd($request->all());
+        $Worktime=Worktime::
+            hasCapacity()->
+            whereDay($request->all()['day'])->
+            where("capacity",'>=',$service->time)->
+            get();
+        //  dd($service);
+        
        
         $Dates=['user_id'=>$id,'services_id'=>$request->all()['service']];
        return view('form',compact('Worktime','Dates'));

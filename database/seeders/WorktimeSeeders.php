@@ -23,7 +23,7 @@ class WorktimeSeeders extends Seeder
                     'day'=>$day,
                     'start'=>$hour,
                     'end'=> $hour+1,
-                    
+                    'capacity'=>120
                 ]);
                
             }

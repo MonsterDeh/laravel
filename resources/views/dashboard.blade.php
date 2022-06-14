@@ -6,7 +6,7 @@
     <div class="">
          {{-- --------------------Show Sercice ---------------------------- --}}
 
-    <div>
+     <div>
         <div class="bg-info text-dark text-center">
             <h3 class="">Service</h3>
         </div>
@@ -41,7 +41,7 @@
         {{-- -------------------- day---------------------------- --}}
   
         <form class="py-4 row " method="GET" action={{route('User.worktime',$User->id)}} >
-            @csrf
+           
             <div class="col" >
                 
              
@@ -81,9 +81,57 @@
         </div>
         
         
-    </form>
-   
+      </form>
+   {{-- --------------------order ---------------------------- --}}
+    <div>
+        @if (!$Orders->isEmpty())
 
+            <table class="table table-secondary">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                    <th scope="col">tracking_code</th>
+                    <th scope="col">Delete</th>
+                    <th scope="col">edit</th>
+                
+                <?php   ?>
+                </tr>
+                </thead>
+                <tbody>
+
+                    @php   $count=1; @endphp
+                    @foreach ($Orders as $Order)
+                        <tr>
+                        <th scope="row">{{$count++}}</th>
+                        <td>{{$Order['tracking_code']}} </td>
+                        <td>
+                            <form action={{route('User.destroy',["User"=>$User->id])}} method="post">
+                                @csrf
+                                @method("delete")
+                                <input  type="hidden" name="tracking_code" value="{{$Order['id']}}">
+                                <button class="btn btn-danger" type="submit"><i class="bi danger bi-file-earmark-excel-fill">delete</i></button>
+                            </form>
+                        </td>   
+                        <td>
+                            <form method="get" action={{route('User.edit',["User"=>$User->id])}}>
+                                @csrf
+                                <input  type="hidden" name="tracking_code" value="{{$Order['id']}}">
+                                <button class="btn btn-success" type="submit"><i class="bi danger bi-file-earmark-excel-fill">edit</i></button>
+                            </form>
+                        </td>
+                        </tr>
+                    @endforeach
+
+                </tbody>
+            </table>
+          @endif
+    
+    
+          
+          
+    </div>
+
+    
 </div>
 
 @endsection
