@@ -10,10 +10,10 @@ use Illuminate\Queue\Worker;
 use Illuminate\Support\Arr;
 
 class TurnController extends Controller
-{
+{   
+    
     public function takeTurn(Request $request)
     {
-        
         return view("turn.takeTurn");
     }
     public function trackTurnPost(Request $request)
@@ -49,4 +49,5 @@ class TurnController extends Controller
        return redirect()->route('User.show',['User'=>$request->get('user_id')]);
         // return view("turn.trackTurn");
     }
+    
 }

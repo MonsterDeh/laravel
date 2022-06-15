@@ -10,10 +10,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Worktime extends Model
 {
+    protected $append=['Time'];
     use HasFactory;
    protected $fillable=['capacity'];
    protected $table="worktime";
 
+   protected function getTimeAttribute(){
+    return $this->start.'-'.$this->end;
+   }
     protected function day(): Attribute
     {
         return Attribute::make(

@@ -10,6 +10,8 @@ class Turn extends Model
     use HasFactory;
 
     protected $fillable=['tracking_code','user_id','services_id','worktime_id','Turn_id'];
+    protected $append=['Total_price'];
+    protected $hidden=[];
 
     public function worktime()
     {
@@ -23,5 +25,10 @@ class Turn extends Model
     {
         return $this->belongsTo(MyUser::class);
     }
+    public function scopeWherePrice($query)
+    {
+        $query->where([['status','=',1]]);
+    }
+    
     
 }
