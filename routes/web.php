@@ -31,12 +31,15 @@ Route::post('/CreateTurn',[TurnController::class,'createTurn'] )->name('CreateTu
 Route::get('User/{User}/Worktime',[UserController::class,'worktime'])->name('User.worktime');
 Route::resource('/User',UserController::class);
 
+Route::get('Admin/',[AdminController::class,'dashboard'] );
+
+
 
 
 // Route::get('/turn', function () {
 //     return view('turn');
 // });
 
-// Auth::routes();
+Auth::routes();
 
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+

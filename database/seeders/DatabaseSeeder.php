@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Turn;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -18,7 +19,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             WorktimeSeeders::class,
             ServiceSeeder::class,
-            MyUserSeed::class,
+            MyUserSeeder::class,
+            // TurnSeeder::class,
         ]);
         // \App\Models\User::factory(10)->create();
 

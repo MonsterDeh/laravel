@@ -60,7 +60,7 @@ class Worktime extends Model
 
     public function turn()
     {
-        return $this->belongsTo(Turn::class);
+        return $this->hasMany(Turn::class);
     }
     
 }

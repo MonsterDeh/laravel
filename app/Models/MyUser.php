@@ -19,7 +19,8 @@ class MyUser extends Model
         'phone',
         'car_type',
         'national_code',
-        'plaque'
+        'plaque',
+        'email'
     ];
 
     /**
@@ -47,4 +48,8 @@ class MyUser extends Model
     //         set: fn ($value,$attributes) => $value.''.$attributes['family_name'],
     //     );
     // }
+    public function turns()
+    {
+        $this->hasMany(Turn::class);
+    }
 }

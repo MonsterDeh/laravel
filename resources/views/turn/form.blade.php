@@ -38,9 +38,11 @@
                        <td>{{$time['end']}} </td>
                        <td>{{$time['capacity']}} </td>
                        <td>
-                          <form action={{route('CreateTurn')}} method="post">
+                          <form action={{route('User.update',['User'=>$Dates['user_id']])}} method="post">
                               @csrf
-                              <input type="hidden" name="turn_id" value={{$Dates['turn']}}>
+                              @method('put')
+                              <input type="hidden" name="oldTurn_id" value={{$Dates['turn_id']}}>
+                              <input type="hidden" name="newWorktim_id" value={{$time['id']}}>
                               
                               <button class="btn btn-primary" type="submit">Choose</button>
                           </form>     

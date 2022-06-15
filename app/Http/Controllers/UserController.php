@@ -7,6 +7,7 @@ use App\Models\Service;
 use App\Models\Turn;
 use App\Models\Worktime;
 use Illuminate\Http\Request;
+use Illuminate\Queue\Worker;
 
 class UserController extends Controller
 {
@@ -107,20 +108,29 @@ class UserController extends Controller
      */
     public function edit(Request $request,$id)
     {
-        dd($id,$request->all());
         // dd($request);
         $turn=Turn::find($request->get('tracking_code'));
-
-        $service=Service::find($turn->services_id);
-        // $Worktime=Worktime::
-        //     hasCapacity()->
-        //     whereDay($turn->worktime->day)->
-        //     where([["capacity",'>=',$service->time],['id' ,'!=',$turn->worktime_id]])->
-        //     get();
-        //  dd($service);
         
+        // dd($turn->worktime  );
+        $oldWorktime=$turn->worktime; 
+        $service=Service::find($turn->services_id);
+        
+        // dd($oldWorktime->day);
+        // dd($id,$request->all(),$turn,$service);
+
+        $Worktime=Worktime::
+        hasCapacity()->
+            whereDay($oldWorktime->day)->
+            where([
+                ["capacity",'>=',$service->time],
+                ['id' ,'!=',$turn->worktime_id]
+            ])->
+            get()
+        ;
        
-        $Dates=['turn_id'=>$turn->id];
+        
+        //    dd($Worktime);
+        $Dates=['turn_id'=>$turn->id,'user_id'=>$turn->user_id];
         return view('turn.form' ,compact('Worktime','Dates'));
      
     }
@@ -130,11 +140,26 @@ class UserController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+    //  * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
+        $Turn=Turn::find($request->get('oldTurn_id'));
+
+        $Turn->worktime->capacity+=$Turn->services->time;
+        $Turn->worktime->save();
+
+        $Turn=Turn::find($request->get('oldTurn_id'));
+        $Turn->worktime_id=$request->get('newWorktim_id');
+        $Turn->save();
         
+        $Turn->worktime->capacity-=$Turn->services->time;
+        $Turn->worktime->save();
+       
+        
+        // dd($Turn,$Turn->services->time);
+
+        return redirect()->route('User.show',['User'=>$id]) ;
     }
 
     /**
