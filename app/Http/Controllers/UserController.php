@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AUserWantUseMySiteRequest;
 use App\Models\MyUser;
 use App\Models\Service;
 use App\Models\Turn;
 use App\Models\Worktime;
+use App\Rules\ItIsNotBetweenTime;
+use App\Rules\NoEarlyDate;
+use App\Rules\OpenTimeOfCarWash;
+use App\Rules\TooLateItIsPast;
 use Illuminate\Http\Request;
 use Illuminate\Queue\Worker;
 use Carbon\Carbon;
@@ -39,45 +44,17 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * 
      */
-    public function store(Request $request)
+    public function store(AUserWantUseMySiteRequest $request)
     {   
         
         // dd($request->all());
-            //------------bug------------//
-        // User::create($request->all());
-        // dd(User::all());
-        // redirect()->route('User.show');
-        //------------------------//
-        //------------bug2------------//
-        // $a=$request->all();
-        // unset($a['_token']);
-        // $user=new User;
-        // foreach($a  as $atr=>$value){
-        //     $user->$atr=$value;
-        // //   echo" $atr=$value";
-        // }
-        // dd($user);
-        // $user->save();
-        //------------------------//
-        //------------bug3------------//
-        // $a=$request->all();
-        // $user=new User;
-        // $user->name=$a['name']." ".$a['family_name'];
-        // // $user->family_name=$a['family_name'];
-        // $user->national_code=$a['national_code'];
-        // $user->phone=$a['phone'];
-        // $user->car_type=$a['car_type'];
-        // $user->plaque=$a['plaque'];
-        // //  dd($user);
-        // $user->save();
-        //------------------------//
-
+        // return$request->all();
 
         MyUser::create($request->all());
         $user=MyUser::where('phone',$request->all()['phone'])->get();
         // dd($user);
        return redirect()->route('User.show',['User'=>$user[0]['id'],200]);
-        // echo 'hekko';
+      
         
 
     }
@@ -182,13 +159,34 @@ class UserController extends Controller
     }
     public function worktime(Request $request,$id)
     {
+        // return$request->all();  
+        
+        $date = Carbon::parse($request->get('day').' '.$request->get('Hour'));
+
+        // $dat=Carbon::parse('11:30');
+        // $a=$date->greaterThanOrEqualTo($dat);
+        
+        // dd($date,$dat);
+       $validate= $request->validate([
+            "day"=>[
+                (new ItIsNotBetweenTime(new Turn,$date)),
+                (new TooLateItIsPast($date)),
+                (new NoEarlyDate)],
+            "Hour"=>[(new OpenTimeOfCarWash($date))] ,
+            "service"=>[]
+        ]);
+
+
+
         // dd($id,$request->all());
         //TODO make new insert for carbon get day change to storData 
-        $date = Carbon::parse($request->get('day').' '.$request->get('Hour'));
-        // $hour = Carbon::parse($request->('hour'));
-        dd($request->all(),$request->get('day').' '.$request->get('Hour'),$date->toDateTime(),);
+        
+        // dd($date->minute);
+        // dd($request->all(),$request->get('day').' '.$request->get('Hour'),$date->toDateTime(),);
         $service=Service::find( $request->get('service'));
         // dd($request->all());
+        //TODO counties hare
+        dd("END");
         $Worktime=Worktime::
             hasCapacity()->
             whereDay($request->all()['day'])->

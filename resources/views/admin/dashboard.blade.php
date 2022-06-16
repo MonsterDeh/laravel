@@ -45,7 +45,7 @@
         <div class="col p-2">
             <h3>Service</h3>
             <div class="d-flex flex-column m-2 ">
-                <form action="Admin/1/Search" method="post">
+                <form action="/Admin/1/Search" method="post">
                     @csrf
                     <div class="d-flex flex-column ">
                         <div class="d-flex flex-row p-4 justify-content-center">

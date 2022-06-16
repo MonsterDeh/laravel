@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Turn;
+use App\Rules\ItIsNotBetweenTime;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorePostRequest extends FormRequest
+class TakeTurnRequestTime extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +15,7 @@ class StorePostRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +26,9 @@ class StorePostRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            // "day"=>[(new ItIsNotBetweenTime(new Turn,)),],
+            // "Hour"=>[] ,
+            // "service"=>[]
         ];
     }
 }

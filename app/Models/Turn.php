@@ -9,7 +9,18 @@ class Turn extends Model
 {
     use HasFactory;
 
-    protected $fillable=['tracking_code','user_id','services_id','worktime_id','Turn_id'];
+    protected $fillable=[
+        'tracking_code',
+        'user_id',
+        'services_id',
+        'worktime_id',
+        'Turn_id',
+        'start',
+        'end',
+        'date',
+        'status',
+        
+    ];
     protected $append=['Total_price'];
     protected $hidden=[];
 

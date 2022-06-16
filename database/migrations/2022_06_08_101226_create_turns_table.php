@@ -16,14 +16,18 @@ return new class extends Migration
         Schema::create('turns', function (Blueprint $table) {
             $table->id();
             $table->string('tracking_code')->unique()->nullable();
+            
+            $table->time('start')->nullable();
+            $table->time('end')->nullable();
 
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('services_id');
-            $table->unsignedBigInteger('worktime_id');
+            $table->unsignedBigInteger('worktime_id')->nullable();
             $table->unsignedBigInteger('Turn_id')->nullable();
             $table->date('date');
             
             $table->integer('status')->default('0');
+            $table->integer('capacity')->default('1');
 
             
             $table->foreign('user_id')->references('id')->on('my_users');

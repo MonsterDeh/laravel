@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Support\Address;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 class MyUser extends Model
 {
     use HasFactory;
@@ -20,7 +21,8 @@ class MyUser extends Model
         'car_type',
         'national_code',
         'plaque',
-        'email'
+        'email',
+        // "family_name"
     ];
 
     /**
@@ -52,4 +54,27 @@ class MyUser extends Model
     {
         $this->hasMany(Turn::class);
     }
+
+    // protected function name(): Attribute
+    // {   
+    //     return Attribute::make(
+    //         set: fn ($value, $attributes)  =>dd($value,$attributes)// $value." ".$attributes['family_name']
+        
+    //     );
+    // }
+
+    // public function setNameAttribute($value)
+    // {
+       
+    //     $this->name .=' '.$this->family_name ;
+    // }
+
+    //TODO Bug  I can not make Mutators
+    // protected function name(): Attribute
+    // {   
+    //     return Attribute::make(
+            
+    //         set: fn ($value,$attributes) => $value.''.$attributes['family_name'],
+    //     );
+    // }
 }

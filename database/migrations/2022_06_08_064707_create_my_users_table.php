@@ -17,10 +17,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('phone')->unique();
-            $table->string('email')->unique();
+            $table->string('email')->unique()->nullable();
             $table->string('car_type');
             $table->string('national_code');
             $table->string('plaque');
+            $table->integer('status')->nullable();
             $table->timestamps();
         });
     }
