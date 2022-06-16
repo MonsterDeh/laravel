@@ -21,7 +21,7 @@ return new class extends Migration
             $table->unsignedBigInteger('services_id');
             $table->unsignedBigInteger('worktime_id');
             $table->unsignedBigInteger('Turn_id')->nullable();
-            $table->date('date')->default(now());
+            $table->date('date');
             
             $table->integer('status')->default('0');
 

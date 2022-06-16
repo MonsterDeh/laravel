@@ -8,6 +8,7 @@ use App\Models\Turn;
 use App\Models\Worktime;
 use Illuminate\Http\Request;
 use Illuminate\Queue\Worker;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -182,6 +183,10 @@ class UserController extends Controller
     public function worktime(Request $request,$id)
     {
         // dd($id,$request->all());
+        //TODO make new insert for carbon get day change to storData 
+        $date = Carbon::parse($request->get('day').' '.$request->get('Hour'));
+        // $hour = Carbon::parse($request->('hour'));
+        dd($request->all(),$request->get('day').' '.$request->get('Hour'),$date->toDateTime(),);
         $service=Service::find( $request->get('service'));
         // dd($request->all());
         $Worktime=Worktime::

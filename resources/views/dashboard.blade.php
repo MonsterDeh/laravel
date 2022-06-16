@@ -42,8 +42,15 @@
   
         <form class="py-4 row " method="GET" action={{route('User.worktime',$User->id)}} >
            
+
+            
             <div class="col" >
-                
+                <div class="w-25">
+                    <input type="date" name="day" class="form-control" id="exampleFormControlInput1" required placeholder="date Search">
+                </div>
+                <div>
+                    <input type="time" id="appt" name="Hour" min="09:00" max="21:00" required>
+                </div>
              
                     <select  name="day" class="form-select" multiple aria-label="multiple select example">
                         <option value="Saturday">Saturday</option>

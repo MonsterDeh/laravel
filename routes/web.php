@@ -7,6 +7,7 @@ use App\Http\Controllers\TurnController;
 use App\Http\Controllers\UserController;
 use App\Models\MyUser;
 use App\Models\Service;
+use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -27,9 +28,8 @@ use Illuminate\Support\Facades\Route;
 
 
 // Route::get('/',function(){
-//  return Service::withCount(['turn'=>function(Illuminate\Database\Eloquent\Builder $query){
-//     $query->where('status', '=', 1);
-//  }])->get();
+// //  dd(Carbon::now());
+// return Carbon::now();
 // });
 
 
@@ -53,9 +53,6 @@ Route::post('Admin/{id}/Search',[SearchController::class,'AdminServiceSearcher']
 
 Auth::routes();
 
-// Route::get('/turn', function () {
-//     return view('turn');
-// });
 
 
 
