@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use App\Support\Address;
+use Illuminate\Foundation\Auth\User as Authenticatable;   
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-class MyUser extends Model
+class MyUser extends Authenticatable
 {
     use HasFactory;
      // protected $guarded=[''];
@@ -15,14 +16,20 @@ class MyUser extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'phone',
-        'car_type',
-        'national_code',
-        'plaque',
-        'email',
-        // "family_name"
+    // protected $fillable = [
+    //     'name',
+    //     'phone',
+    //     'car_type',
+    //     'national_code',
+    //     'plaque',
+    //     'email',
+    //     // "family_name"
+    // ];
+    protected $guarded=[
+        'id',
+        'remember_token',
+        'created_at',
+        'is_admin',
     ];
 
     /**
@@ -69,7 +76,7 @@ class MyUser extends Model
     //     $this->name .=' '.$this->family_name ;
     // }
 
-    //TODO Bug  I can not make Mutators
+    //TODO: Bug  I can not make Mutators
     // protected function name(): Attribute
     // {   
     //     return Attribute::make(

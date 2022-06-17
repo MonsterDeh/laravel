@@ -6,6 +6,7 @@ use App\Models\MyUser;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class MyUserSeeder extends Seeder
 {
@@ -15,8 +16,19 @@ class MyUserSeeder extends Seeder
      * @return void
      */
     public function run()
-    {
-        MyUser::factory(5)->create(); 
+    {   
+
+        MyUser::query()->insert([
+            'name'=>'admin' ,
+            'phone'=>'09876543210 ',
+            'national_code'=>'123Admin',
+            'car_type'=>'car',
+            'email'=>'admin@admin.com',
+            'plaque'=>'98',
+            'is_admin'=>true,
+            'password'=>Hash::make("123")
+        ]);
+        MyUser::factory(10)->create(); 
         // MyUser::factory(5)->configure; 
 
 

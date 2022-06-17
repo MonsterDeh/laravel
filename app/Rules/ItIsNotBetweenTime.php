@@ -18,7 +18,7 @@ class ItIsNotBetweenTime implements Rule
     {
         //
     }
-
+    
     /**
      * Determine if the validation rule passes.
      *
@@ -28,6 +28,8 @@ class ItIsNotBetweenTime implements Rule
      */
     public function passes($attribute, $value)
     {   
+
+        //TODO: it is not work
         // dd($attribute,$value);
         // dd($this->Model,$this->date);
         $Turn=$this->Model;

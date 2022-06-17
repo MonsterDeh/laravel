@@ -42,17 +42,17 @@
   
         <form class="py-4 row " method="GET" action={{route('User.worktime',$User->id)}} >
            
-
+            <input type="hidden" name="id" value="{{$User->id}}">
             
             <div class="col" >
                 <div class="w-25">
                     <input type="date" name="day" class="form-control" id="exampleFormControlInput1" required placeholder="date Search">
                 </div>
                 <div>
-                    <input type="time" id="appt" name="Hour" min="09:00" max="21:00" required>
+                    <input type="time" class="form-control w-25" id="appt" name="Hour" min="09:00" max="21:00" required>
                 </div>
              
-                    <select  name="day" class="form-select" multiple aria-label="multiple select example">
+                    {{-- <select  name="day" class="form-select" multiple aria-label="multiple select example">
                         <option value="Saturday">Saturday</option>
                         <option value="Sunday">Sunday</option>
                         <option value="Monday">Monday</option>
@@ -61,7 +61,7 @@
                         <option value="Thursday">Thursday</option>
                         <option value="Friday">Friday</option>
                     
-                    </select>
+                    </select> --}}
                 
         </div>
        
@@ -108,6 +108,8 @@
                     <tr>
                         <th scope="col">#</th>
                     <th scope="col">tracking_code</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Time</th>
                     <th scope="col">Delete</th>
                     <th scope="col">edit</th>
                 
@@ -121,6 +123,8 @@
                         <tr>
                         <th scope="row">{{$count++}}</th>
                         <td>{{$Order['tracking_code']}} </td>
+                        <td>{{$Order['date']}} </td>
+                        <td>{{$Order['start'].'-'.$Order['end']}} </td>
                         <td>
                             <form action={{route('User.destroy',["User"=>$User->id])}} method="post">
                                 @csrf

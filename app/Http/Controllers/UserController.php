@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AUserWantUseMySiteRequest;
+use App\Http\Requests\UpdateMyUserSiteRequest;
 use App\Models\MyUser;
 use App\Models\Service;
 use App\Models\Turn;
@@ -14,6 +15,7 @@ use App\Rules\TooLateItIsPast;
 use Illuminate\Http\Request;
 use Illuminate\Queue\Worker;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 
 class UserController extends Controller
 {
@@ -186,17 +188,43 @@ class UserController extends Controller
         $service=Service::find( $request->get('service'));
         // dd($request->all());
         //TODO counties hare
-        dd("END");
-        $Worktime=Worktime::
-            hasCapacity()->
-            whereDay($request->all()['day'])->
-            where("capacity",'>=',$service->time)->
-            get();
+        // dd("END");
+        // $Worktime=Worktime::
+        //     hasCapacity()->
+        //     whereDay($request->all()['day'])->
+        //     where("capacity",'>=',$service->time)->
+        //     get();
+        // dd($request->all(),$date->copy()->addMinute($service->time)->format('H:i'),$service->time);
+        $random=rand(1000000,9999999);
+        
+        // $create=Arr::add($request->all(),"tracking_code",$random);
+        // $update=[
+                
+        //     ];
+            
+        Turn::query()->create([
+
+            "tracking_code"=>$random,
+            'date'=>$request->get('day'),
+            'start'=>$request->get('Hour'),
+            'end'=>$date->copy()->addMinute($service->time)->format('H:i'),
+            'services_id'=>$request->get('service'),
+            'user_id'=>$request->get('id')
+
+        ]);
+
         //  dd($service);
         
        
-        $Dates=['user_id'=>$id,'services_id'=>$request->all()['service']];
-       return view('form',compact('Worktime','Dates'));
+        // $Dates=['user_id'=>$id,'services_id'=>$request->all()['service']];
+    //    return view('form',compact('Worktime','Dates'));
+        return  to_route('User.show',$request->get('id'),201);
         
+    }
+
+    public function updateMyUserSite(UpdateMyUserSiteRequest $request)
+    {
+       MyUser::find(auth()->id())->update([$request->all()]);
+       return back();
     }
 }
