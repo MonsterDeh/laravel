@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminServiceController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TurnController;
 use App\Http\Controllers\UserController;
 use App\Models\MyUser;
 use App\Models\Service;
+use App\Models\Turn;
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Artisan;
@@ -27,10 +29,17 @@ use Illuminate\Support\Facades\Route;
 
 
 
-// Route::get('/',function(){
-// //  dd(Carbon::now());
-// return Carbon::now();
+// Route::get('/test',function(){
+
+
 // });
+
+
+    
+ 
+
+
+
 
 Route::get('/',[HomeController::class,'home'] )->name('home');
 
@@ -48,8 +57,12 @@ Route::middleware('auth')->group(function()
     Route::post('Admin/{id}/Search',[SearchController::class,'AdminServiceSearcher'] )
     ->whereNumber('id')
     ;
+    Route::put('/Admin/DoneTurn',[AdminController::class,'DoneTurn'])->name('DoneTurn');
+    
     Route::put('/updateMyUserSite',[UserController::class,'updateMyUserSite'] )->name('UpdateUser');
 
+
+    Route::resource('/Admin/Service',AdminServiceController::class)->only(['store','update','destroy']);
 });
 
 

@@ -107,6 +107,9 @@
                     <th scope="col">Type Services</th>
                     <th scope="col">Delete</th>
                     <th scope="col">edit</th>
+                    @if(auth()->check() and auth()->user()->is_admin==1)
+                    <th scope="col">done</th>
+                    @endif
                 
                 <?php   ?>
                 </tr>
@@ -124,6 +127,7 @@
                       
                         <td>
                             <form action={{route('User.destroy',["User"=>$User->id])}} method="post">
+    
                                 @csrf
                                 @method("delete")
                                 <input  type="hidden" name="tracking_code" value="{{$Order['tracking_code']}}">
@@ -138,6 +142,22 @@
                                 Eite
                             </button>
                         </td>
+                        @if(auth()->check() and auth()->user()->is_admin==1)
+                        <td>
+                            <form action="{{route('DoneTurn')}}" method="POST">
+                                @csrf
+                                @method("put")
+                                <input  type="hidden" name="tracking_code" value="{{$Order['tracking_code']}}">
+                                @if ($Order['status']==0)
+                                
+                                <button type="submit" class="btn btn-info">it is  done </button>
+                                @else   
+                                
+                                <button type="submit" class="btn btn-warning">it is not done </button>
+                                @endif
+                            </form>
+                        </td>
+                        @endif
                         <!-- Modal -->
                         <div class="modal fade" id="staticBackdrop_{{$count }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                             <div class="modal-dialog">

@@ -41,6 +41,11 @@
                           <li class="nav-item">
                               <a class="nav-link active" aria-current="page" href="{{ route('TakeTurn') }}">Dashboard</a>
                             </li>
+                            @if (auth()->user()->is_admin==1)
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="{{ route('AdminHome') }}">Admin Dashboard</a>
+                            </li>
+                            @endif
                           <li class="nav-item">
                               <a class="nav-link active" aria-current="page" href="{{route("User.show",auth()->id())}}">Take turn</a>
                             </li>

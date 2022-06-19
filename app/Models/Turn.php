@@ -51,23 +51,23 @@ class Turn extends Model
             } ,
         );
     }
-    // public function scopeWhereThreeMonth($query)
-    // {
+    public function scopeWhereThreeMonth($query)
+    {
         
-    //     $query->where(function ($query2) {
-    //         $date=Carbon::now();
-    //         $query2->whereMonth('date',$date->month);
+        $query->where(function ($query2) {
+            $date=Carbon::now();
+            $query2->whereMonth('date',$date->month);
 
-    //         $query2->orWhere(function($query3) use($date){
-    //             $query3->whereMonth('date',$date->subMonth(1)->month);
-    //         });
+            $query2->orWhere(function($query3) use($date){
+                $query3->whereMonth('date',$date->subMonth(1)->month);
+            });
 
-    //         $query2->orWhere(function($query4) use($date){
-    //             $query4->whereMonth('date',$date->subMonth(2)->month);
-    //         });
+            $query2->orWhere(function($query4) use($date){
+                $query4->whereMonth('date',$date->subMonth(2)->month);
+            });
 
-    //     } );
-    // }
+        } );
+    }
 
     
     

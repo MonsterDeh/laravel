@@ -12,8 +12,9 @@ class SearchController extends Controller
 {
     public function AdminServiceSearcher(Request $request ,$id)
     {   
-        // dd($request->get('Search_date'),$request->all());
         
+        $One_user=($request->exists('One_user'))? 1:0;
+
         $Search_status=(($request->get('Search_status')=='y')
         ? 
             1 //true
@@ -28,7 +29,8 @@ class SearchController extends Controller
 
         session([
             'Search_status' => $Search_status,
-            'Search_date'   => $request->get('Search_date')??false
+            'Search_date'   => $request->get('Search_date')??false,
+            'one_user'=>$One_user
         ]);
             
 

@@ -38,7 +38,7 @@ class MyUser extends Authenticatable
         'is_profile_complete',
         'is_register',
     ];
-    // protected $appends = ['howManyInThreeMonth'];
+    // protected $appends = ['threeMonth'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -67,7 +67,7 @@ class MyUser extends Authenticatable
     // }
     public function turns()
     {
-        $this->hasMany(Turn::class);
+      return  $this->hasMany(Turn::class,'user_id','id');
     }
 
     // protected function name(): Attribute
@@ -92,35 +92,58 @@ class MyUser extends Authenticatable
     //         set: fn ($value,$attributes) => $value.''.$attributes['family_name'],
     //     );
     // }
+    // protected function threeMonth(): Attribute
+    // {   
+    //     return Attribute::make(
+            
+    //         get: function ($value,$attributes){
+    //             $this::withCount(["turns as threeMonth"=>function (Builder $q){
+    //                         $q->where(function ($query2) {
+    //                             $date=Carbon::now();
+    //                             $query2->whereMonth('date',$date->month);
+                    
+    //                             $query2->orWhere(function($query3) use($date){
+    //                                 $query3->whereMonth('date',$date->subMonth(1)->month);
+    //                             });
+                    
+    //                             $query2->orWhere(function($query4) use($date){
+    //                                 $query4->whereMonth('date',$date->subMonth(2)->month);
+    //                             });
+                    
+    //                         } );
+    //                     }])->get();
+    //         },
+    //     );
+    // }
 
 
-    public function howManyInThreeMonth()
-    {   
+    // public function howManyInThreeMonth()
+    // {   
         
-        // $this->query()->withCount(
-        //   ['turns as howManyInThreeMonth'=>
-        //       function(Builder $query)
-        //       {
-        //           $query->WhereThreeMonth();
-        //       }
-        //   ])->get();
+    //     // $this->query()->withCount(
+    //     //   ['turns as howManyInThreeMonth'=>
+    //     //       function(Builder $query)
+    //     //       {
+    //     //           $query->WhereThreeMonth();
+    //     //       }
+    //     //   ])->get();
             
-        // $this->query()->where(DB::RAW('month(created_at)'), $months)
-        // ->get(); 
-        // DB::table($this->table)->select()->;
-        $date=Carbon::now();
-        $months=[
-            $date->month,
-            $date->copy()->subMonth(1)->month,
-            $date->copy()->subMonth(2)->month,
-        ];
-            $this->query()->withCount(['turns'=>function(Builder $qeury1) use($months){
-                $qeury1->where(DB::RAW('month(date)'), $months)
-                ->get();
-            }]);
+    //     // $this->query()->where(DB::RAW('month(created_at)'), $months)
+    //     // ->get(); 
+    //     // DB::table($this->table)->select()->;
+    //     $date=Carbon::now();
+    //     $months=[
+    //         $date->month,
+    //         $date->copy()->subMonth(1)->month,
+    //         $date->copy()->subMonth(2)->month,
+    //     ];
+    //         $this->query()->withCount(['turns'=>function(Builder $qeury1) use($months){
+    //             $qeury1->where(DB::RAW('month(date)'), $months)
+    //             ->get();
+    //         }]);
             
             
         
-    }
+    // }
     
 }

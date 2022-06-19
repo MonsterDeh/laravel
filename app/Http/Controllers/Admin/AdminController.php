@@ -3,16 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\AdminMaineRequest;
+use App\Http\Requests\Admin\AdminTheTaskIsDoneRequest;
 use App\Models\MyUser;
 use App\Models\Service;
 use App\Models\Turn;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-  public function dashboard(Request $request )
+  public function dashboard(AdminMaineRequest $request )
   {
 
     $flag=0;
@@ -65,9 +68,42 @@ class AdminController extends Controller
     }
         
       // Turn::query()->paginate(10);
-        
-    return  view('admin.dashboard',compact('Turn','Service',));
+      $Users=MyUser::withCount(['turns',"turns as threeMonth"=>function (Builder $q){
+        $q->where(function ($query2) {
+            $date=Carbon::now();
+            $query2->whereMonth('date',$date->month);
+
+            $query2->orWhere(function($query3) use($date){
+                $query3->whereMonth('date',$date->subMonth(1)->month);
+            });
+
+            $query2->orWhere(function($query4) use($date){
+                $query4->whereMonth('date',$date->subMonth(2)->month);
+            });
+      } );
+      }])->get();
+      
+        // dd(
+        //   $Users,
+        //   $Users->find($Turn->last()->user_id)->threeMonth
+        // );
+    return  view('admin.dashboard',compact('Turn','Service','Users'));
     return [session()->all(),$Service];
     
+  }
+
+  public function DoneTurn(AdminTheTaskIsDoneRequest $request)
+  {
+     $turn= Turn::query()->where('tracking_code',$request->get('tracking_code'))->first();
+     if($turn->status==0){
+       $turn->status=1;
+       
+      }else{
+
+        $turn->status=0;
+     }
+     dd($turn);
+     $turn->save; 
+     return back();
   }
 }

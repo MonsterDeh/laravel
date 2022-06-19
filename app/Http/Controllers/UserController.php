@@ -70,10 +70,17 @@ class UserController extends Controller
      */
     public function show($id)
     {   
+      
         
         $User=MyUser::findOrFail($id);
         $Services=Service::all(); 
-        $Orders= Turn::where([['user_id',$id],['status','0']])->get();
+        if(auth()->check() and auth()->user()->is_admin=1){
+            
+            $Orders= Turn::where('user_id',$id)->get();
+        }else{
+            $Orders= Turn::where([['user_id',$id],['status','0']])->get();
+
+        }
     //    dd($Orders);
         
         Worktime::hasCapacity()->get();
