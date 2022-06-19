@@ -9,15 +9,67 @@
             {{-- ---------------------User and service---------------------- --}}
         <div class="col">
             <h3>User and service</h3>
+            @if(session('one_user')==0 or !session()->exists('one_user'))
+            <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">User</th>
+                <th scope="col">Service</th>
+                <th scope="col">Price</th>
+                <th scope="col">Time</th>
+                <th scope="col">How Many</th>
+                <th scope="col">See</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $count=1;
+                @endphp
+
+
+                    @forelse ($Turn as $perTurn)
+                    @php
+                    $perUser=$Users->find($perTurn->user_id);
+                    $checkColor=$perUser->threeMonth;
+                    if($checkColor>5){
+                        $color='green';
+                    }elseif ($checkColor<=5 and $checkColor>2) {
+                        $color='orange';
+                    } else {
+                        $color='red';
+                    }
+                    @endphp
+                    <tr class="" style="color:{{$color}};"> >
+                    <th scope="row">{{$count++}} </th>
+                    <td>{{$perTurn->user->name}} </td>
+                    <td>{{$perTurn->services->name}}</td>
+                    <td>{{$perTurn->services->price}}</td>
+                    <td>{{$perTurn->time}}</td>
+                    <td>{{$perUser->threeMonth}}</td>
+                    <td><a href="{{route('User.show',['User'=>$perUser->id])}} ">Lets see </a></td>
+                    
+                    </tr>
+                        
+                    @empty
+                        
+                    @endforelse
+                    
+                    
+                    
+
+                </tbody>
+            </table>
+            @else
             <table class="table">
                 <thead>
                   <tr>
                     <th scope="col">#</th>
                     <th scope="col">User</th>
-                    <th scope="col">Service</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Time</th>
-                    <th scope="col">How Many</th>
+                    {{-- <th scope="col">Service</th> --}}
+                    {{-- <th scope="col">Price</th> --}}
+                    <th scope="col">How Many Total in threeMonth</th>
+                    <th scope="col">How Many (Filter) in threeMonth</th>
                     <th scope="col">See</th>
                   </tr>
                 </thead>
@@ -26,11 +78,8 @@
                         $count=1;
                     @endphp
 
-                    @if(session()->get('one_user')==0)
-
-                        @forelse ($Turn as $perTurn)
+                        @forelse ($Users as $perUser)
                         @php
-                        $perUser=$Users->find($perTurn->user_id);
                         $checkColor=$perUser->threeMonth;
                         if($checkColor>5){
                             $color='green';
@@ -42,50 +91,29 @@
                         @endphp
                         <tr class="" style="color:{{$color}};"> >
                         <th scope="row">{{$count++}} </th>
-                        <td>{{$perTurn->user->name}} </td>
-                        <td>{{$perTurn->services->name}}</td>
-                        <td>{{$perTurn->services->price}}</td>
-                        <td>{{$perTurn->time}}</td>
+                        <td>{{$perUser->name}} </td>
+                        {{-- <td>{{$perUser->services->name}}</td> --}}
+                        {{-- <td>{{$perUser->services->price}}</td> --}}
+                        <td>{{$perUser->turns_count}}</td>
                         <td>{{$perUser->threeMonth}}</td>
                         <td><a href="{{route('User.show',['User'=>$perUser->id])}} ">Lets see </a></td>
-                        
-                        </tr>
-                            
-                        @empty
-                            
-                        @endforelse
-                    @else
-                        @forelse ($User as $perTurn)
-                        @php
-                        $perUser=$Users->find($perTurn->user_id);
-                        $checkColor=$perUser->threeMonth;
-                        if($checkColor>5){
-                            $color='green';
-                        }elseif ($checkColor<=5 and $checkColor>2) {
-                            $color='orange';
-                        } else {
-                            $color='red';
-                        }
-                        @endphp
-                        <tr class="" style="color:{{$color}};"> >
-                        <th scope="row">{{$count++}} </th>
-                        <td>{{$perTurn->user->name}} </td>
-                        <td>{{$perTurn->services->name}}</td>
-                        <td>{{$perTurn->services->price}}</td>
-                        <td>{{$perTurn->time}}</td>
-                        <td>{{$perUser->threeMonth}}</td>
-                        <td><a href="{{route('User.show',['User'=>$perUser->id])}} ">Lets see </a></td>
-                        
-                        </tr>
-                            
-                        @empty
-                            
-                        @endforelse
 
-                    @endif
-                </tbody>
-              </table>
+                        </tr>
+                            
+                        @empty
+                            
+                        @endforelse
+ 
+
+                    </tbody>
+                </table>
+                @endif
+              @if (session('one_user')==0 or !session()->exists('one_user'))
               {{ $Turn->links() }}
+                  
+              @else
+              {{ $Users->links() }}
+              @endif
         </div>
 
         <div class="col">
@@ -123,7 +151,7 @@
                             <input type="date" name="Search_date" class="form-control" id="exampleFormControlInput1" placeholder="date Search">
                         </div>
                         <div class="form-check form-switch">
-                            <input class="form-check-input" name="One_user" value="1" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                            <input class="form-check-input" name="One_user" value="1" type="checkbox" role="switch" id="flexSwitchCheckDefault" <?php ((session('one_user')==1 ))? print_r( 'checked'): '';  ?> >
                             <label class="form-check-label" for="flexSwitchCheckDefault">one user</label>
                           </div>
                     </div>
@@ -323,6 +351,7 @@
     </div>
 </div>
 
+{{-- @dd($Users) --}}
 
 @endsection
 

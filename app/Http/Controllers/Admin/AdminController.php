@@ -19,27 +19,90 @@ class AdminController extends Controller
   {
 
     $flag=0;
+    $Users=null;
+    $Turn=null;
     if(session()->exists('Search_status') && session()->exists('Search_date')&& !( session('Search_date')==false ||  session('Search_date')==null) )
     {
       if(session('Search_status')==1 or session('Search_status')==0) 
       {
+        
         $Service=Service::withCount(['Turn'=>function(Builder $query){
             $query->where([
                 ['date',session('Search_date')],
                 ['status',session('Search_status')]
             ]);
         }])->get();
-        $Turn=Turn::where([
-                ['date',session('Search_date')],
-                ['status',session('Search_status')]
-            ])->paginate(10);
+        
+        if(session('one_user')==0 or !session()->exists('one_user') )
+        {
+            $Turn=Turn::where([
+              ['date',session('Search_date')],
+              ['status',session('Search_status')]
+          ])->paginate(10);
+        }else
+        {
+          $Users=MyUser::withCount(['turns',"turns as threeMonth"=>function (Builder $q)
+          {
+            $q->where([
+              ['date',session('Search_date')],
+              ['status',session('Search_status')]
+            ]);
+          
+           $q->where(function ($query2){
+              $date=Carbon::now();
+              
+              $query2->whereMonth('date',$date->month);
+  
+              $query2->orWhere(function($query3) use($date){
+                  $query3->whereMonth('date',$date->subMonth(1)->month);
+              });
+  
+              $query2->orWhere(function($query4) use($date){
+                  $query4->whereMonth('date',$date->subMonth(2)->month);
+              });
+            });
+          }
+          ])->paginate(10);
+        }
       }else{
         $Service=Service::withCount(['Turn'=>function(Builder $query){
             $query->where([
                 ['date',session('Search_date')],
             ]);
         }])->get();
-        $Turn=Turn::where('date',session('Search_date'))->paginate(10);
+        
+        if(session('one_user')==0 or !session()->exists('one_user') )
+        {
+            $Turn=Turn::where([
+              ['date',session('Search_date')],
+            
+          ])->paginate(10);
+        }else
+        {
+          $Users=MyUser::withCount(['turns',"turns as threeMonth"=>function (Builder $q)
+          {
+            $q->where([
+              ['date',session('Search_date')],
+             
+            ]);
+          
+           $q->where(function ($query2){
+              $date=Carbon::now();
+              
+              $query2->whereMonth('date',$date->month);
+  
+              $query2->orWhere(function($query3) use($date){
+                  $query3->whereMonth('date',$date->subMonth(1)->month);
+              });
+  
+              $query2->orWhere(function($query4) use($date){
+                  $query4->whereMonth('date',$date->subMonth(2)->month);
+              });
+            });
+          }
+          ])->paginate(10);
+        }
+        
       }
 
     }elseif(session()->exists('Search_status') && ( session('Search_date')==false ||  session('Search_date')==null))
@@ -52,22 +115,91 @@ class AdminController extends Controller
                   ['status',session('Search_status')]  
               ]);
           }])->get();
-          $Turn=Turn::where('status',session('Search_status'))->paginate(10);
+          if(session('one_user')==0 or !session()->exists('one_user') )
+          {
+              $Turn=Turn::where([
+               
+                ['status',session('Search_status')]
+            ])->paginate(10);
+          }else
+          {
+            $Users=MyUser::withCount(['turns',"turns as threeMonth"=>function (Builder $q)
+            {
+              $q->where([
+               
+                ['status',session('Search_status')]
+              ]);
+            
+             $q->where(function ($query2){
+                $date=Carbon::now();
+                
+                $query2->whereMonth('date',$date->month);
+    
+                $query2->orWhere(function($query3) use($date){
+                    $query3->whereMonth('date',$date->subMonth(1)->month);
+                });
+    
+                $query2->orWhere(function($query4) use($date){
+                    $query4->whereMonth('date',$date->subMonth(2)->month);
+                });
+              });
+            }
+            ])->paginate(10);
+          }
           
           
           
         }else{
           $Service=Service::withCount(['Turn'])->get();
-          $Turn=Turn::paginate(10);
+          if(session('one_user')==0 or !session()->exists('one_user'))
+          {
+            $Turn=Turn::paginate(10);
 
+          }else{
+            $Users=MyUser::withCount(['turns',"turns as threeMonth"=>function (Builder $q){
+              $q->where(function ($query2) {
+                  $date=Carbon::now();
+                  $query2->whereMonth('date',$date->month);
+      
+                  $query2->orWhere(function($query3) use($date){
+                      $query3->whereMonth('date',$date->subMonth(1)->month);
+                  });
+      
+                  $query2->orWhere(function($query4) use($date){
+                      $query4->whereMonth('date',$date->subMonth(2)->month);
+                  });
+            } );
+            }])->paginate(10);
+          }
+          
         }
     }else
     {
       $Service=Service::withCount('Turn')->get();
-      $Turn=Turn::paginate(10);
+      if(session('one_user')==0 or !session()->exists('one_user'))
+          {
+            $Turn=Turn::paginate(10);
+
+          }else{
+            $Users=MyUser::withCount(['turns',"turns as threeMonth"=>function (Builder $q){
+              $q->where(function ($query2) {
+                  $date=Carbon::now();
+                  $query2->whereMonth('date',$date->month);
+      
+                  $query2->orWhere(function($query3) use($date){
+                      $query3->whereMonth('date',$date->subMonth(1)->month);
+                  });
+      
+                  $query2->orWhere(function($query4) use($date){
+                      $query4->whereMonth('date',$date->subMonth(2)->month);
+                  });
+            } );
+            }])->paginate(10);
+          }
     }
         
-      // Turn::query()->paginate(10);
+      
+      if($Users==null)
       $Users=MyUser::withCount(['turns',"turns as threeMonth"=>function (Builder $q){
         $q->where(function ($query2) {
             $date=Carbon::now();
@@ -85,10 +217,11 @@ class AdminController extends Controller
       
         // dd(
         //   $Users,
-        //   $Users->find($Turn->last()->user_id)->threeMonth
+        //   $Turn,
+        //   // $Users->find($Turn->last()->user_id)->threeMonth
         // );
     return  view('admin.dashboard',compact('Turn','Service','Users'));
-    return [session()->all(),$Service];
+    // return [session()->all(),$Service];
     
   }
 
