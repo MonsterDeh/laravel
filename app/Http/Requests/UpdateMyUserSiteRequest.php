@@ -27,11 +27,12 @@ class UpdateMyUserSiteRequest extends FormRequest
     {
         return [
             "name"=>'required|min:3|max:100',
-            "family_name"=>'required|min:3|max:100',
+            // "family_name"=>'required|min:3|max:100',
             "national_code"=>'numeric',
-            "phone"=>[new UniqueAndCheckUpdate(new MyUser),] /* 'unique:App\Models\MyUser'*/,
-            "car_type"=>'string',
-            "plaque"=>''
+            "phone"=> [ 'required', new UniqueAndCheckUpdate(new MyUser,["phone"])]  /*'unique:App\Models\MyUser'*/,
+            "car_type"=>'required|string',
+            "plaque"=>'required',
+            'email'=>['required', new UniqueAndCheckUpdate(new MyUser)]
         ];
     }
 }

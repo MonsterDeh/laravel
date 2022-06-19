@@ -29,14 +29,14 @@ class AdminController extends Controller
         $Turn=Turn::where([
                 ['date',session('Search_date')],
                 ['status',session('Search_status')]
-            ])->get();
+            ])->paginate(10);
       }else{
         $Service=Service::withCount(['Turn'=>function(Builder $query){
             $query->where([
                 ['date',session('Search_date')],
             ]);
         }])->get();
-        $Turn=Turn::where('date',session('Search_date'))->get();
+        $Turn=Turn::where('date',session('Search_date'))->paginate(10);
       }
 
     }elseif(session()->exists('Search_status') && ( session('Search_date')==false ||  session('Search_date')==null))
@@ -49,23 +49,22 @@ class AdminController extends Controller
                   ['status',session('Search_status')]  
               ]);
           }])->get();
-          $Turn=Turn::where('status',session('Search_status'))->get();
+          $Turn=Turn::where('status',session('Search_status'))->paginate(10);
           
           
           
         }else{
           $Service=Service::withCount(['Turn'])->get();
-          $Turn=Turn::all();
+          $Turn=Turn::paginate(10);
 
         }
     }else
     {
       $Service=Service::withCount('Turn')->get();
-      $Turn=Turn::all();
+      $Turn=Turn::paginate(10);
     }
-          
-          
         
+      // Turn::query()->paginate(10);
         
     return  view('admin.dashboard',compact('Turn','Service',));
     return [session()->all(),$Service];

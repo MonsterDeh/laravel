@@ -28,7 +28,7 @@ class NoEarlyDate implements Rule
     public function passes($attribute, $value)
     {
         Carbon::parse($value);
-        if((Carbon::parse($value))->lessThan(Carbon::now())){
+        if((Carbon::parse($value))->lessThanOrEqualTo(Carbon::now())){
             return false;
         }
         return true;

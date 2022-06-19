@@ -8,14 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class UniqueAndCheckUpdate implements Rule
 {
+    private array $exception;
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct(private MyUser $Model)
+    public function __construct(private MyUser $Model,private array $exceptionForAcceptZeroModelInDatabase=[])
     {
-        //
+        $this->exception= $exceptionForAcceptZeroModelInDatabase;
     }
 
     /**
@@ -29,13 +30,25 @@ class UniqueAndCheckUpdate implements Rule
     {
         $model=$this->Model;
         $user=$model->where($attribute,$value)->get();
-        if(count($user)>1)
-        return false ;
 
-        $user=$user->first();
-        
-        if(request()->get('email')==$user->email or request()->get('phone')==$user->phone)
-        return true;
+        if(in_array($attribute,$this->exception))
+        {
+            if(count($user)>1  )
+            return false ;
+            
+            $user=auth()->user();
+        }else{
+            
+            if(count($user)!=1  )
+            return false ;
+
+            $user=$user->first();
+        }
+
+        if(request()->get('email')==$user?->email or request()->get('phone')==$user?->phone){
+            
+            return true;
+        }
         return false;
     }
 
@@ -46,6 +59,6 @@ class UniqueAndCheckUpdate implements Rule
      */
     public function message()
     {
-        return 'The This phone number is wrong.';
+        return 'The This :attribute number is wrong.';
     }
 }

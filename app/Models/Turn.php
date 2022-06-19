@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Turn extends Model
 {
     use HasFactory;
-
+    protected $appends = ['time'];
     protected $fillable=[
         'tracking_code',
         'user_id',
@@ -40,6 +42,34 @@ class Turn extends Model
     {
         $query->where([['status','=',1]]);
     }
+    protected function time(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes){
+                return $attributes['start'].'-'.$attributes['end'];
+
+            } ,
+        );
+    }
+    // public function scopeWhereThreeMonth($query)
+    // {
+        
+    //     $query->where(function ($query2) {
+    //         $date=Carbon::now();
+    //         $query2->whereMonth('date',$date->month);
+
+    //         $query2->orWhere(function($query3) use($date){
+    //             $query3->whereMonth('date',$date->subMonth(1)->month);
+    //         });
+
+    //         $query2->orWhere(function($query4) use($date){
+    //             $query4->whereMonth('date',$date->subMonth(2)->month);
+    //         });
+
+    //     } );
+    // }
+
+    
     
     
 }

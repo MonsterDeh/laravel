@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AUserWantUseMySiteRequest;
+use App\Http\Requests\DestroyTurnRequest;
 use App\Http\Requests\UpdateMyUserSiteRequest;
 use App\Models\MyUser;
 use App\Models\Service;
@@ -22,7 +23,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+    //  * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -33,7 +34,7 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+    //  * @return \Illuminate\Http\Response
      */
     public function create()
     {
@@ -88,30 +89,40 @@ class UserController extends Controller
      */
     public function edit(Request $request,$id)
     {
-        // dd($request);
-        $turn=Turn::find($request->get('tracking_code'));
-        
-        // dd($turn->worktime  );
-        $oldWorktime=$turn->worktime; 
-        $service=Service::find($turn->services_id);
-        
-        // dd($oldWorktime->day);
-        // dd($id,$request->all(),$turn,$service);
+        $date = Carbon::parse($request->get('day').' '.$request->get('Hour'));
+        // $service
+        // dd(request()->all());
+        $validate= $request->validate(
+            [
+                "day"=>[
+                (new ItIsNotBetweenTime(new Turn,$date,new Service)),
+                (new TooLateItIsPast($date)),
+                (new NoEarlyDate)],
+                "Hour"=>[(new OpenTimeOfCarWash($date))] ,
+                'service'=>'required'
+                
+            ]
+        );
 
-        $Worktime=Worktime::
-        hasCapacity()->
-            whereDay($oldWorktime->day)->
-            where([
-                ["capacity",'>=',$service->time],
-                ['id' ,'!=',$turn->worktime_id]
-            ])->
-            get()
-        ;
-       
+
+
         
+        // dd($validate);
+        $turn=Turn::query()->where('tracking_code',$request->get('tracking_code'));
+        // $service=$turn->service;
+        // dd($turn->);
+        $turn->update(
+            [
+                'date'=>$validate['day'],
+                'start'=>$validate['Hour'],
+                'end'=>$date->addMinute(Service::find($validate['service'])->time) ,
+            ]
+        );
+       
+        return back(201)->with('success','update is successful');
         //    dd($Worktime);
-        $Dates=['turn_id'=>$turn->id,'user_id'=>$turn->user_id];
-        return view('turn.form' ,compact('Worktime','Dates'));
+        // $Dates=['turn_id'=>$turn->id,'user_id'=>$turn->user_id];
+        // return view('turn.form' ,compact('Worktime','Dates'));
      
     }
 
@@ -148,16 +159,16 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request,$id)
+    public function destroy(DestroyTurnRequest $request,$id)
     {
         // dd($request->all());
-        $Turn=Turn::find($request->get('tracking_code'));
-        $worktime=Worktime::find($Turn->worktime_id );
-        $worktime->capacity+=Service::find($Turn->services_id)->time;
-        $worktime->save();
-
-        Turn::destroy($request->get('tracking_code'));
-        return redirect()->route("User.show",['User' => $id]);
+        // $Turn=Turn::find($request->get('tracking_code'));
+        // $worktime=Worktime::find($Turn->worktime_id );
+        // $worktime->capacity+=Service::find($Turn->services_id)->time;
+        // $worktime->save();
+        
+        Turn::query()->where('tracking_code',$request->get('tracking_code'))->delete();
+        return redirect()->route("User.show",['User' => $id])->with('success','delete is successful');
     }
     public function worktime(Request $request,$id)
     {
@@ -165,30 +176,28 @@ class UserController extends Controller
         
         $date = Carbon::parse($request->get('day').' '.$request->get('Hour'));
 
-        // $dat=Carbon::parse('11:30');
-        // $a=$date->greaterThanOrEqualTo($dat);
         
-        // dd($date,$dat);
        $validate= $request->validate([
+
             "day"=>[
-                (new ItIsNotBetweenTime(new Turn,$date)),
+                (new ItIsNotBetweenTime(new Turn,$date,new Service)),
                 (new TooLateItIsPast($date)),
                 (new NoEarlyDate)],
             "Hour"=>[(new OpenTimeOfCarWash($date))] ,
-            "service"=>[]
+            "service"=>['numeric']
         ]);
 
 
 
         // dd($id,$request->all());
-        //TODO make new insert for carbon get day change to storData 
+       
         
         // dd($date->minute);
         // dd($request->all(),$request->get('day').' '.$request->get('Hour'),$date->toDateTime(),);
         $service=Service::find( $request->get('service'));
         // dd($request->all());
-        //TODO counties hare
-        // dd("END");
+      
+        
         // $Worktime=Worktime::
         //     hasCapacity()->
         //     whereDay($request->all()['day'])->
@@ -224,7 +233,14 @@ class UserController extends Controller
 
     public function updateMyUserSite(UpdateMyUserSiteRequest $request)
     {
-       MyUser::find(auth()->id())->update([$request->all()]);
-       return back();
+      $user= MyUser::find(auth()->id());
+      $user->update($request->all());
+        if($user->is_profile_complete==0){
+            $user->is_profile_complete=1;
+            $user->is_register=1;
+            $user->save();
+        }
+       
+       return back(201)->with('success','You update Successfully');
     }
 }

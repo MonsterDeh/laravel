@@ -33,9 +33,19 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
+                        @guest
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="{{ route('TakeTurn') }}">Take turn</a>
                           </li>
+                          @else
+                          <li class="nav-item">
+                              <a class="nav-link active" aria-current="page" href="{{ route('TakeTurn') }}">Dashboard</a>
+                            </li>
+                          <li class="nav-item">
+                              <a class="nav-link active" aria-current="page" href="{{route("User.show",auth()->id())}}">Take turn</a>
+                            </li>
+
+                        @endguest
                           <li class="nav-item">
                             <a class="nav-link" href="{{route('TrackTurn') }}">Track turn</a>
                           </li>
@@ -43,7 +53,7 @@
                             <a class="nav-link" href="#">Service</a>
                           </li>
                     </ul>
-
+                
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         <!-- Authentication Links -->

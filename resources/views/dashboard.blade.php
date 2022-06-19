@@ -46,22 +46,13 @@
             
             <div class="col" >
                 <div class="w-25">
-                    <input type="date" name="day" class="form-control" id="exampleFormControlInput1" required placeholder="date Search">
+                    <input type="date" value="{{old('date')}}" name="day" class="form-control" id="exampleFormControlInput1" required placeholder="date Search">
                 </div>
                 <div>
-                    <input type="time" class="form-control w-25" id="appt" name="Hour" min="09:00" max="21:00" required>
+                    <input type="time" value="{{old('time')}}" class="form-control w-25" id="appt" name="Hour" min="09:00" max="21:00" required>
                 </div>
              
-                    {{-- <select  name="day" class="form-select" multiple aria-label="multiple select example">
-                        <option value="Saturday">Saturday</option>
-                        <option value="Sunday">Sunday</option>
-                        <option value="Monday">Monday</option>
-                        <option value="Tuesday">Tuesday</option>
-                        <option value="Wednesday">Wednesday</option>
-                        <option value="Thursday">Thursday</option>
-                        <option value="Friday">Friday</option>
-                    
-                    </select> --}}
+                   
                 
         </div>
        
@@ -98,6 +89,9 @@
                 </ul>
             </div>
         @endif
+        @if (session()->has('success'))
+        <div class="alert h3 alert-success"> {{session('success')}}</div>  
+        @endif
 
    {{-- --------------------order ---------------------------- --}}
     <div>
@@ -110,6 +104,7 @@
                     <th scope="col">tracking_code</th>
                     <th scope="col">Date</th>
                     <th scope="col">Time</th>
+                    <th scope="col">Type Services</th>
                     <th scope="col">Delete</th>
                     <th scope="col">edit</th>
                 
@@ -121,26 +116,80 @@
                     @php   $count=1; @endphp
                     @foreach ($Orders as $Order)
                         <tr>
-                        <th scope="row">{{$count++}}</th>
+                        <th scope="row">{{$count}}</th>
                         <td>{{$Order['tracking_code']}} </td>
                         <td>{{$Order['date']}} </td>
                         <td>{{$Order['start'].'-'.$Order['end']}} </td>
+                        <td>{{$Order->services->first()->name}} </td>
+                      
                         <td>
                             <form action={{route('User.destroy',["User"=>$User->id])}} method="post">
                                 @csrf
                                 @method("delete")
-                                <input  type="hidden" name="tracking_code" value="{{$Order['id']}}">
+                                <input  type="hidden" name="tracking_code" value="{{$Order['tracking_code']}}">
                                 <button class="btn btn-danger" type="submit"><i class="bi danger bi-file-earmark-excel-fill">delete</i></button>
                             </form>
                         </td>   
                         <td>
-                            <form method="get" action={{route('User.edit',["User"=>$User->id])}}>
-                                @csrf
-                                <input  type="hidden" name="tracking_code" value="{{$Order['id']}}">
-                                <button class="btn btn-success" type="submit"><i class="bi danger bi-file-earmark-excel-fill">edit</i></button>
-                            </form>
+                            
+
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop_{{$count}}">
+                                Eite
+                            </button>
                         </td>
+                        <!-- Modal -->
+                        <div class="modal fade" id="staticBackdrop_{{$count }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">
+                                    Date: {{$Order['date']}} 
+                                    Time: {{$Order['start'].'-'.$Order['end']}} 
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form method="get" action={{route('User.edit',["User"=>$User->id])}}>
+                                    @csrf
+                                <div class="modal-body">
+                                        <input  type="hidden" name="tracking_code" value="{{$Order['tracking_code']}}" >
+                                        <div class="d-flex justify-content-around" >
+                                            <div class="">
+                                                <input type="date" value="" name="day" class="form-control" id="exampleFormControlInput1" required placeholder="date Search">
+                                            </div>
+                                            <div>
+                                                <input type="time" value="" class="form-control " id="appt" name="Hour" min="09:00" max="21:00" required>
+                                            </div>
+                                          
+                                                <select id="ServiceSelect" name="service" class="form-select  form-select-sm w-25" aria-label="Default select example">
+                                                    @forelse ($Services as $service)
+                                                    <option value={{$service['id']}} >{{$service['name']}} </option>
+                                                    @empty
+                                                        <p>bug</p>
+                                                    @endforelse
+                                                    
+                                                  </select>
+                                            
+                                           
+                                        </div>
+                                       
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button class="btn btn-success" type="submit">
+                                            <i class="bi danger bi-file-earmark-excel-fill">edit</i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            </div>
+                        </div>
+                        
+
                         </tr>
+                        @php
+                            $count++;
+                        @endphp
                     @endforeach
 
                 </tbody>
@@ -155,6 +204,23 @@
     
 </div>
 
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Understood</button>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 @push('script')

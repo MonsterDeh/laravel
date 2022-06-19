@@ -27,7 +27,7 @@
                       <td>{{$perTurn->user->name}} </td>
                       <td>{{$perTurn->services->name}}</td>
                       <td>{{$perTurn->services->price}}</td>
-                      <td>{{$perTurn->worktime->time}}</td>
+                      <td>{{$perTurn->time}}</td>
                       
                     </tr>
                         
@@ -37,7 +37,7 @@
                  
                 </tbody>
               </table>
-
+              {{ $Turn->links() }}
         </div>
 
         <div class="col">
@@ -147,7 +147,14 @@
                    <td>{{$per->price}}</td>
                    <td>{{$per->time}}</td>
                    <td>{{$per->description}}</td>
-                   <td>{{$per->turn_count}}</td>
+
+                    <td>
+                        
+                    </td>
+
+                    <td>
+
+                    </td>
                    
                    </tr>
                        

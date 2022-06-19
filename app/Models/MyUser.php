@@ -3,12 +3,17 @@
 namespace App\Models;
 
 use App\Support\Address;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;   
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+
 class MyUser extends Authenticatable
 {
+
     use HasFactory;
      // protected $guarded=[''];
     /**
@@ -30,7 +35,10 @@ class MyUser extends Authenticatable
         'remember_token',
         'created_at',
         'is_admin',
+        'is_profile_complete',
+        'is_register',
     ];
+    // protected $appends = ['howManyInThreeMonth'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -84,4 +92,35 @@ class MyUser extends Authenticatable
     //         set: fn ($value,$attributes) => $value.''.$attributes['family_name'],
     //     );
     // }
+
+
+    public function howManyInThreeMonth()
+    {   
+        
+        // $this->query()->withCount(
+        //   ['turns as howManyInThreeMonth'=>
+        //       function(Builder $query)
+        //       {
+        //           $query->WhereThreeMonth();
+        //       }
+        //   ])->get();
+            
+        // $this->query()->where(DB::RAW('month(created_at)'), $months)
+        // ->get(); 
+        // DB::table($this->table)->select()->;
+        $date=Carbon::now();
+        $months=[
+            $date->month,
+            $date->copy()->subMonth(1)->month,
+            $date->copy()->subMonth(2)->month,
+        ];
+            $this->query()->withCount(['turns'=>function(Builder $qeury1) use($months){
+                $qeury1->where(DB::RAW('month(date)'), $months)
+                ->get();
+            }]);
+            
+            
+        
+    }
+    
 }
