@@ -40,7 +40,7 @@
                         $color='red';
                     }
                     @endphp
-                    <tr class="" style="color:{{$color}};"> >
+                    <tr class="" style="color:{{$color}};"> 
                     <th scope="row">{{$count++}} </th>
                     <td>{{$perTurn->user->name}} </td>
                     <td>{{$perTurn->services->name}}</td>
